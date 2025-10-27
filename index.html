@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Magic Eight Ball</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --bg:#0e1220;--panel:#121a39;--edge:#1b2557;--text:#e8ecff;--muted:#aab2d9;--accent:#7c8cff;--glow:#22d3ee;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 10% -20%, #13204a 0%, transparent 60%),
+      radial-gradient(1000px 600px at 90% 120%, #0e1a3a 0%, transparent 60%),
+      var(--bg);
+  }
+  .wrap{max-width:900px;margin:48px auto;padding:0 16px}
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--edge));
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;box-shadow:0 18px 38px rgba(0,0,0,.35);
+    padding:28px;
+  }
+  h1{margin:0 0 6px;font-weight:900;letter-spacing:.3px}
+  .tag{color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;gap:12px;margin-top:14px}
+  .row{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:14px}
+  .q{flex:1}
+  .a{
+    white-space:nowrap;
+    background:rgba(124,140,255,.18);
+    color:var(--accent);
+    padding:6px 12px;border-radius:999px;font-weight:700
+  }
+  .empty{color:var(--muted);padding:12px;border:1px dashed rgba(255,255,255,.18);border-radius:14px;margin-top:10px}
+  .actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    background:linear-gradient(180deg,var(--accent),#5e6cff);color:#0b0f1e;
+    padding:12px 16px;border-radius:12px;font-weight:800;text-decoration:none
+  }
+  .ghost{
+    background:transparent;border:1px solid rgba(255,255,255,.18);color:var(--text)
+  }
+  .ball{
+    width:120px;height:120px;border-radius:50%;margin:10px auto 18px;
+    background:radial-gradient(circle at 35% 30%, #4ad 0%, #223 42%, #111 60%);
+    box-shadow:0 0 0 4px rgba(34,211,238,.15), inset 0 0 40px rgba(0,0,0,.6);
+    display:grid;place-items:center;font-weight:900;color:#cff;text-shadow:0 2px 8px rgba(34,211,238,.35)
+  }
+</style>
+</head>
+<body>
+<script>
+  // Answers (8)
+  const answers = [
+    "Yes — the signs are clear.",
+    "No — not at this time.",
+    "Ask again after you reflect.",
+    "Absolutely.",
+    "Unlikely — clouds in the crystal.",
+    "It is certain.",
+    "Outlook good, proceed wisely.",
+    "Answer hazy — try once more."
+  ];
+
+  // Gameplay loop 
+  const qa = [];
+  let keepGoing = true;
+
+  do {
+    let q = prompt("Ask the Magic Eight Ball a yes/no question.\n(Click Cancel or leave blank to stop.)");
+    if (q === null) break;
+    q = q.trim();
+    if (q === "") break;
+
+    // random index
+    const idx = Math.floor(Math.random() * answers.length);
+    const a = answers[idx];
+
+    qa.push({ q: q.replace(/[<>]/g,""), a });
+
+    // ask to continue
+    keepGoing = confirm("Shake again? Click OK to ask another question, or Cancel to see your results.");
+  } while (keepGoing);
+
+  // Render 
+  let items = "";
+  if (qa.length === 0){
+    items = `<div class="empty">You didn’t ask any questions. Refresh to try again.</div>`;
+  } else {
+    for (let i = 0; i < qa.length; i++){
+      items += `
+        <div class="row">
+          <div class="q"><strong>Q${i+1}:</strong> ${qa[i].q}</div>
+          <div class="a">🎱 ${qa[i].a}</div>
+        </div>`;
+    }
+  }
+
+  document.write(`
+    <div class="wrap">
+      <div class="card">
+        <div class="ball">8</div>
+        <h1>Magic Eight Ball</h1>
+        <p class="tag">Think of a yes/no question, shake (ask), and see your fate.</p>
+
+        <div class="grid">
+          ${items}
+        </div>
+
+        <div class="actions">
+          <a class="btn" href="" onclick="location.reload();return false;">Ask Again</a>
+          <a class="btn ghost" href="https://en.wikipedia.org/wiki/Magic_8-Ball" target="_blank" rel="noopener">What is a Magic 8-Ball?</a>
+        </div>
+      </div>
+    </div>
+  `);
+</script>
+</body>
+</html>
